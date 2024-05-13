@@ -20,8 +20,8 @@ public class InventoryItem {
         this.prodRetail = prodRetail;
         this.prodQuantity = prodQuantity;
 
-        prodCostFormatted = NumberFormat.getCurrencyInstance(Locale.of("en", "us")).format(prodCost);
-        prodRetailFormatted = NumberFormat.getCurrencyInstance(Locale.of("en", "us")).format(prodRetail);
+        prodCostFormatted = NumberFormat.getCurrencyInstance(Locale.US).format(prodCost);
+        prodRetailFormatted = NumberFormat.getCurrencyInstance(Locale.US).format(prodRetail);
     }
 
     public Integer getProdId() {

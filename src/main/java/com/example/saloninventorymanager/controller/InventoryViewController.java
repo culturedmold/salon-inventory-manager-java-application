@@ -24,4 +24,12 @@ public class InventoryViewController {
     public ObservableList<InventoryItem> refreshInventory() {
         return inventoryModel.refreshInventoryList();
     }
+
+    public ObservableList<InventoryItem> searchInventory(String s) {
+        if (s.isEmpty()) {
+            return inventoryModel.getInventoryList();
+        } else {
+            return inventoryModel.searchInventory(s);
+        }
+    }
 }

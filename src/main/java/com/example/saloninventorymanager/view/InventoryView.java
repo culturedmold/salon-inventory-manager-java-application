@@ -6,8 +6,10 @@ import com.example.saloninventorymanager.util.SceneSwitcher;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -18,6 +20,7 @@ import java.util.Optional;
 public class InventoryView implements View {
     private final AnchorPane inventoryAnchorPane;
     private final TableView<InventoryItem> inventoryTable;
+    private final TextField searchField;
 
 
     public InventoryView(InventoryViewController controller) {
@@ -33,6 +36,18 @@ public class InventoryView implements View {
         // init tableview and set column properties
         inventoryTable = new TableView<>();
         inventoryTable.setItems(controller.getInventoryModel().getInventoryList());
+
+        // search field
+        Label searchLabel = new Label("Search");
+        searchField = new TextField();
+        searchField.setPromptText("Search by product name");
+        HBox searchHBox = new HBox(4.0);
+        searchHBox.setAlignment(Pos.CENTER_LEFT);
+        searchHBox.getChildren().addAll(searchLabel, searchField);
+
+        searchField.setOnKeyReleased(e -> {
+            inventoryTable.setItems(controller.searchInventory(searchField.getText()));
+        });
 
         // init columns
         TableColumn<InventoryItem, Integer> productIdColumn = new TableColumn<>();
@@ -122,7 +137,7 @@ public class InventoryView implements View {
 
         // put the view together
         inventoryAnchorPane.getChildren().add(mainVBox);
-        mainVBox.getChildren().addAll(title, inventoryTable, buttonBar);
+        mainVBox.getChildren().addAll(title, searchHBox, inventoryTable, buttonBar);
 
 
     }
