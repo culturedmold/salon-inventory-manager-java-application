@@ -1,7 +1,9 @@
 package com.example.saloninventorymanager.view;
 
 import com.example.saloninventorymanager.controller.InventoryViewController;
+import com.example.saloninventorymanager.controller.ModifyInventoryViewController;
 import com.example.saloninventorymanager.domain_objects.InventoryItem;
+import com.example.saloninventorymanager.util.AlertResponse;
 import com.example.saloninventorymanager.util.SceneSwitcher;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,12 +17,14 @@ import javafx.scene.text.Text;
 import java.util.Optional;
 
 public class ModifyInventoryView implements View {
+    public ModifyInventoryViewController controller;
     public final InventoryItem selectedItem;
 
     private final AnchorPane anchorPane;
 
 
     public ModifyInventoryView(InventoryItem selectedItem) {
+        this.controller = new ModifyInventoryViewController();
         this.selectedItem = selectedItem;
 
         // init UI components
@@ -57,6 +61,33 @@ public class ModifyInventoryView implements View {
         Button submitButton = new Button("Submit");
 
         // on submit action
+        submitButton.setOnAction(e -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            try {
+                selectedItem.setProdName(productNameField.getText());
+                selectedItem.setProdCost(Double.valueOf(productCostField.getText().replaceAll("[^-\\d.]", "")));
+                selectedItem.setProdRetail(Double.valueOf(productRetailField.getText().replaceAll("[^-\\d.]", "")));
+                selectedItem.setProdQuantity(Integer.valueOf(productQuantityField.getText()));
+
+                AlertResponse alertResponse = controller.submitModifyInventory(selectedItem);
+
+                alert.setTitle(alertResponse.getResponseTitle());
+                alert.setContentText(alertResponse.getResponseText());
+
+                if (alertResponse.getResponseType().equals("success")) {
+                    alert.setAlertType(Alert.AlertType.INFORMATION);
+                    alert.showAndWait();
+                    SceneSwitcher.openNewView(new InventoryView(new InventoryViewController()), e, "Inventory");
+                } else {
+                    alert.showAndWait();
+                }
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                alert.setTitle("An Error Has Occurred");
+                alert.setContentText("Please try again.");
+                alert.showAndWait();
+            }
+        });
 
         // on cancel action
         cancelButton.setOnAction(e -> {

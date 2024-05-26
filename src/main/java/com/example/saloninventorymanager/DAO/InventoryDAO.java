@@ -12,6 +12,7 @@ import java.sql.SQLException;
 public class InventoryDAO {
     private static final String findInventoryStatement = "SELECT * FROM products";
     private static final String createInventoryStatement = "INSERT INTO products (prod_name, prod_cost, prod_retail, prod_qty) VALUES (?, ?, ?, ?)";
+    private static final String updateInventoryStatement = "UPDATE products SET prod_name = ?, prod_cost = ?, prod_retail = ?, prod_qty = ? WHERE prod_id = ?";
     private static final String deleteInventoryStatement = "DELETE FROM products WHERE prod_id = ?";
 
     public static ObservableList<InventoryItem> findInventory() {
@@ -45,6 +46,23 @@ public class InventoryDAO {
             ps.setDouble(2, cost);
             ps.setDouble(3, retail);
             ps.setInt(4, quantity);
+
+            ps.executeUpdate();
+
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean updateInventory(Integer productId, String productName, Double productCost, Double productRetail, Integer productQuantity) {
+        try (PreparedStatement ps = DatabaseAccess.getConnection().prepareStatement(updateInventoryStatement)) {
+            ps.setString(1, productName);
+            ps.setDouble(2, productCost);
+            ps.setDouble(3, productRetail);
+            ps.setInt(4, productQuantity);
+            ps.setInt(5, productId);
 
             ps.executeUpdate();
 
